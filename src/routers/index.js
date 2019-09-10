@@ -1,0 +1,23 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+import movieRouter from './movie'
+import mineRouter from './mine'
+import theater from './theater'
+
+
+Vue.use(Router)
+
+export default new Router({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes: [
+    movieRouter,
+    mineRouter,
+    theater,
+    {
+      path: "*",
+      redirect: '/movie'
+    }
+  ],
+  linkActiveClass: 'active'
+})
