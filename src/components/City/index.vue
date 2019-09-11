@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import BSroll from 'better-scroll'
+import BScroll from 'better-scroll'
 import { setTimeout } from 'timers';
 export default {
   name: 'city',
@@ -140,7 +140,7 @@ export default {
   },
   methods: {
     _initScroll(){
-      this.scroll = new BSroll(this.$refs.wrapper, {
+      this.scroll = new BScroll(this.$refs.wrapper, {
         click: true
       })
     },
