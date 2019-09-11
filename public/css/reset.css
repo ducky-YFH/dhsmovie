@@ -95,3 +95,10 @@ html{
 .dn{
   display: none;
 }
+
+button{
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  outline: none;
+}
