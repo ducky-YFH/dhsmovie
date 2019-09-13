@@ -37,6 +37,7 @@ export default {
   overflow: hidden;
   -moz-box-sizing: border-box;
   padding-bottom: 50px;
+  box-sizing: border-box;
   nav {
     height: 46px;
     line-height: 46px;

@@ -1,146 +1,20 @@
 <template>
   <div class="NowPlaying-container" ref="wrapper">
     <ul>
-      <li class="movie-item">
+      <li class="movie-item" v-for="(item) in movieList" :key="item.id">
         <div class="movie-detail">
           <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
+            :src="item.img | imgFilter"
             alt
           />
           <div class="introduce">
-            <h1>罗小黑战记</h1>
+            <h1>{{ item.nm }}</h1>
             <p>
               观众评
-              <span class="score">9.4</span>
+              <span class="score">{{ item.sc }}</span>
             </p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>今天111家影院放映1408场</p>
-          </div>
-        </div>
-        <button>购票</button>
-      </li>
-      <li class="movie-item">
-        <div class="movie-detail">
-          <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
-            alt
-          />
-          <div class="introduce">
-            <h1>罗小黑战记</h1>
-            <p>
-              观众评
-              <span class="score">9.4</span>
-            </p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>今天111家影院放映1408场</p>
-          </div>
-        </div>
-        <button>购票</button>
-      </li>
-      <li class="movie-item">
-        <div class="movie-detail">
-          <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
-            alt
-          />
-          <div class="introduce">
-            <h1>罗小黑战记</h1>
-            <p>
-              观众评
-              <span class="score">9.4</span>
-            </p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>今天111家影院放映1408场</p>
-          </div>
-        </div>
-        <button>购票</button>
-      </li>
-      <li class="movie-item">
-        <div class="movie-detail">
-          <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
-            alt
-          />
-          <div class="introduce">
-            <h1>罗小黑战记</h1>
-            <p>
-              观众评
-              <span class="score">9.4</span>
-            </p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>今天111家影院放映1408场</p>
-          </div>
-        </div>
-        <button>购票</button>
-      </li>
-      <li class="movie-item">
-        <div class="movie-detail">
-          <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
-            alt
-          />
-          <div class="introduce">
-            <h1>罗小黑战记</h1>
-            <p>
-              观众评
-              <span class="score">9.4</span>
-            </p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>今天111家影院放映1408场</p>
-          </div>
-        </div>
-        <button>购票</button>
-      </li>
-      <li class="movie-item">
-        <div class="movie-detail">
-          <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
-            alt
-          />
-          <div class="introduce">
-            <h1>罗小黑战记</h1>
-            <p>
-              观众评
-              <span class="score">9.4</span>
-            </p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>今天111家影院放映1408场</p>
-          </div>
-        </div>
-        <button>购票</button>
-      </li>
-      <li class="movie-item">
-        <div class="movie-detail">
-          <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
-            alt
-          />
-          <div class="introduce">
-            <h1>罗小黑战记</h1>
-            <p>
-              观众评
-              <span class="score">9.4</span>
-            </p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>今天111家影院放映1408场</p>
-          </div>
-        </div>
-        <button>购票</button>
-      </li>
-      <li class="movie-item">
-        <div class="movie-detail">
-          <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
-            alt
-          />
-          <div class="introduce">
-            <h1>罗小黑战记</h1>
-            <p>
-              观众评
-              <span class="score">9.4</span>
-            </p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>今天111家影院放映1408场</p>
+            <p>主演：{{ item.star }}</p>
+            <p>{{ item.showInfo }}</p>
           </div>
         </div>
         <button>购票</button>
@@ -155,7 +29,14 @@ import { setTimeout } from 'timers';
 export default {
   name:'NowPlaying',
   data(){
-    return {}
+    return {
+      movieList: []
+    }
+  },
+  filters:{
+    imgFilter(url){
+      return url.replace(/w\.h/,'128.180')
+    }
   },
   methods:{
     _initScroll(){
@@ -163,6 +44,18 @@ export default {
         click: true
       })
     },
+    // 获取服务器数据
+    getData(){
+      this.$axios.get('/api/movieOnInfoList?cityId=10')
+      .then((res) => {
+        if(res.data.msg === 'ok'){
+            this.movieList = res.data.data.movieList
+        }
+      })
+    }
+  },
+  created(){
+    this.getData()
   },
   mounted(){
     setTimeout(() => {
@@ -177,6 +70,8 @@ export default {
 <style lang='scss' scoped>
 .NowPlaying-container {
   height: calc(100% - 100px);
+  height: -moz-calc(100% - 100px);
+  height: -webkit-calc(100% - 100px);
   overflow: hidden;
   .movie-item {
     padding: 15px;

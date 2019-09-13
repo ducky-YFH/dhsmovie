@@ -5,126 +5,26 @@
       <div class="hotCity">
         <h1>热门城市</h1>
         <ul>
-          <li>
-            <span>北京</span>
-          </li>
-          <li>
-            <span>上海</span>
-          </li>
-          <li>
-            <span>广州</span>
-          </li>
-          <li>
-            <span>天津</span>
-          </li>
-          <li>
-            <span>杭州</span>
+          <li v-for="item in hotCity" :key="item.id">
+            <span>{{ item.nm }}</span>
           </li>
         </ul>
       </div>
       <!-- 城市选择 -->
-      <div class="citySelect">
-        <h1>A</h1>
+      <div class="citySelect" v-for="item in allCity" :key="item.index">
+        <h1>{{ item.index }}</h1>
         <ul>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-        </ul>
-      </div>
-      <div class="citySelect">
-        <h1>A</h1>
-        <ul>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
-          <li>北京</li>
+          <li v-for="itemList in item.list" :key="itemList.id">
+            {{ itemList.name }}
+          </li>
         </ul>
       </div>
     </section>
-    <div class="leftNav">
+    <div class="rightNav">
       <ul>
-        <li>A</li>
-        <li>B</li>
-        <li>C</li>
-        <li>D</li>
-        <li>E</li>
+        <li v-for="(item,index) in allCity" :key="item.index" @click="selectItem(index, $event)">
+          {{item.index}}
+        </li>
       </ul>
     </div>
   </div>
@@ -133,17 +33,98 @@
 <script>
 import BScroll from 'better-scroll'
 import { setTimeout } from 'timers';
+
 export default {
   name: 'city',
   data(){
-    return {}
+    return {
+      hotCity : [],
+      allCity : [],
+      listHeight: [],
+      scrollY: 0,
+      clickEvent: false,
+    }
   },
   methods: {
+    // better-scroll格式化
     _initScroll(){
       this.scroll = new BScroll(this.$refs.wrapper, {
         click: true
       })
     },
+    // 从服务器获取城市数据
+    getCityData(){
+      this.$axios.get('/api/cityList')
+      .then((res)=>{
+        if (res.data.msg === 'ok'){
+          let cityList = res.data.data.cities
+          this.formatCityList(cityList)
+        }
+      })
+    },
+    // 获取热门城市和城市按首位字母存放
+    formatCityList(cityList){
+      let hotCity = [];
+      let allCity = [];
+      cityList.forEach((item)=>{
+        // 获取热门城市
+        if(item.isHot === 1){
+          hotCity.push(item)
+        }
+        let firstStr = item.py.substr(0,1).toUpperCase()
+        function judge(firstStr){
+          for (let i = 0; i < allCity.length; i++) {
+            if(allCity[i].index === firstStr){
+              return false
+            }            
+          }
+          return true
+        }
+        if(judge(firstStr)){
+          allCity.push({index: firstStr, list: [{id: item.id, name: item.nm}]})
+        }else{
+          allCity.forEach((item2)=>{
+            if(item2.index === firstStr){
+              item2.list.push({id: item.id, name: item.nm})
+            }
+          })
+        }
+      })
+      // 将字母由A--Z进行排序
+      allCity.sort((n1,n2)=>{
+        if(n1.index > n2.index){
+          return 1
+        }else if(n1.index < n2.index){
+          return -1 
+        }else{
+          return 0
+        }
+      })
+      // eslint-disable-next-line no-console
+      this.hotCity = hotCity
+      this.allCity = allCity
+    },    
+    _getHeight () {
+      let cityItems = document.getElementsByClassName('citySelect')
+      let height = 0
+      this.listHeight.push(height)
+      for (let i = 0; i < cityItems.length; i++) {
+        const el = cityItems[i]
+        height += el.clientHeight
+        this.listHeight.push(height)
+      }
+    },
+    selectItem (index, event) {
+      this.clickEvent = true
+      if (!event._constructed) {
+        return ''
+      } else {
+        let cityItems = document.getElementsByClassName('citySelect')
+        let el = cityItems[index]
+        this.scroll.scrollToElement(el, 300)
+      }
+    },
+    
   },
   created () {
   },
@@ -151,6 +132,8 @@ export default {
     setTimeout(() => {
       this.$nextTick(() => {
         this._initScroll()
+        this.getCityData()
+        this._getHeight()
       })
     },500)
   }
@@ -160,8 +143,12 @@ export default {
 <style lang='scss' scoped>
 .City-container {
   height: calc(100% - 100px);
+  height: -moz-calc(100% - 100px);
+  height: -webkit-calc(100% - 100px);
   overflow: hidden;
   width: calc(100% - 20px);
+  width: -moz-calc(100% - 20px);
+  width: -webkit-calc(100% - 20px);
   .slide-container {
     background-color: #fff5f0;
     .hotCity {
@@ -207,13 +194,13 @@ export default {
       }
     }
   }
-  .leftNav{
+  .rightNav {
     width: 20px;
     position: absolute;
     right: 0;
-    top: 30%;
-    ul{
-      li{
+    top: 20%;
+    ul {
+      li {
         text-align: center;
         margin-top: 5px;
         cursor: pointer;

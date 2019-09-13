@@ -1,77 +1,17 @@
 <template>
   <div class="ComingSoon-container" ref="wrapper">
     <ul>
-      <li class="movie-item">
+      <li class="movie-item" v-for="item in movieList" :key="item.id">
         <div class="movie-detail">
           <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
+            :src="item.img | imgFilter"
             alt
           />
           <div class="introduce">
-            <h1>小小的愿望</h1>
-            <p>234493&nbsp;人想看</p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>2019-09-12上映</p>
-          </div>
-        </div>
-        <button>预售</button>
-      </li>
-      <li class="movie-item">
-        <div class="movie-detail">
-          <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
-            alt
-          />
-          <div class="introduce">
-            <h1>小小的愿望</h1>
-            <p>234493&nbsp;人想看</p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>2019-09-12上映</p>
-          </div>
-        </div>
-        <button>预售</button>
-      </li>
-      <li class="movie-item">
-        <div class="movie-detail">
-          <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
-            alt
-          />
-          <div class="introduce">
-            <h1>小小的愿望</h1>
-            <p>234493&nbsp;人想看</p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>2019-09-12上映</p>
-          </div>
-        </div>
-        <button>预售</button>
-      </li>
-      <li class="movie-item">
-        <div class="movie-detail">
-          <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
-            alt
-          />
-          <div class="introduce">
-            <h1>小小的愿望</h1>
-            <p>234493&nbsp;人想看</p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>2019-09-12上映</p>
-          </div>
-        </div>
-        <button>预售</button>
-      </li>
-      <li class="movie-item">
-        <div class="movie-detail">
-          <img
-            src="http://p0.meituan.net/128.180/movie/2918a5e403dde6e4254941968d7719ce3942369.jpg"
-            alt
-          />
-          <div class="introduce">
-            <h1>小小的愿望</h1>
-            <p>234493&nbsp;人想看</p>
-            <p>主演：山新，和相海,皇贞季</p>
-            <p>2019-09-12上映</p>
+            <h1>{{ item.nm }}</h1>
+            <p>{{ item.wish }}&nbsp;人想看</p>
+            <p>{{ item.star }}</p>
+            <p>{{ item.rt }}上映</p>
           </div>
         </div>
         <button>预售</button>
@@ -85,8 +25,15 @@ import BScroll from 'better-scroll'
 import { setTimeout } from 'timers';
 export default {
   name: 'ComingSoon',
+  filters: {
+    imgFilter(img){
+      return img.replace(/w\.h/, '128.180')
+    }
+  },
   data(){
-    return {}
+    return {
+      movieList: []
+    }
   },
   methods:{
     _initScroll(){
@@ -94,6 +41,18 @@ export default {
         click: true
       })
     },
+    // 获取数据
+    getData(){
+      this.$axios.get('/api/movieComingList?cityId=10')
+      .then( (res) => {
+        if(res.data.msg === 'ok'){
+          this.movieList = res.data.data.comingList
+        }
+      })
+    }
+  },
+  created(){
+    this.getData()
   },
   mounted(){
     setTimeout(() => {
@@ -108,6 +67,8 @@ export default {
 <style lang='scss' scoped>
 .ComingSoon-container {
   height: calc(100% - 100px);
+  height: -moz-calc(100% - 100px);
+  height: -webkit-calc(100% - 100px);
   overflow: hidden;
   .movie-item {
     padding: 15px;
