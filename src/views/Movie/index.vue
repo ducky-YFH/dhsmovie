@@ -2,7 +2,7 @@
   <div class="Movie-container">
     <Header title="大黑帅电影"></Header>
     <nav>
-      <router-link tag="span" class="city" to="/movie/city">成都</router-link>
+      <router-link tag="span" class="city" to="/movie/city">{{ $store.state.city.nm }}</router-link>
       <router-link tag="span" to="/movie/nowPlaying">正在热映</router-link>
       <router-link tag="span" to="/movie/comingSoon">即将上映</router-link>
       <router-link tag="span" to="/movie/search" class="icon icon-zhenhuichongtubiaozhizuo-kuozhan-"></router-link>
@@ -17,12 +17,36 @@
 <script>
 import Header from '@/components/Header'
 import TabBar from '@/components/TabBar'
+import {messageBox} from '@/components/JS'
+
 
 export default {
   name: 'Movie',
   components: {
     Header,
-    TabBar
+    TabBar,
+  },
+  mounted(){
+    setTimeout(()=>{
+      this.$axios.get('/api/getLocation').then(res => {
+        let msg = res.data.msg
+        if(msg === 'ok'){
+          let name = res.data.data.nm;
+          let id = res.data.data.id
+          if(this.$store.state.city.id == id) return
+          messageBox({
+            title: '定位',
+            content: '深圳',
+            cancel: '取消',
+            ok: '切换定位',
+            handleOk:()=>{
+              window.localStorage.setItem('city',JSON.stringify({name: name,id: id}))
+              window.location.reload()
+            }
+          })
+        }
+      })
+    },2000)
   }
 }
 </script>

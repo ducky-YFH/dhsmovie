@@ -6,18 +6,20 @@
     </header>
     <h1 class="title">电影/电视剧/综艺</h1>
     <div class="movieContent" ref="wrapper">
-      <ul>
-        <li v-for="item in movieList" :key="(item.id)">
-          <img :src="item.img | imgFilter" alt />
-          <div class="introduce">
-            <h1>{{ item.nm }}</h1>
-            <p>{{ item.enm }}</p>
-            <p class="type">{{ item.cat }}</p>
-            <p>{{ item.frt }}</p>
-          </div>
-          <span class="score">{{ item.sc }}</span>
-        </li>
-      </ul>
+      <scroller>
+        <ul>
+          <li v-for="item in movieList" :key="(item.id)">
+            <img :src="item.img | imgFilter" alt />
+            <div class="introduce">
+              <h1>{{ item.nm }}</h1>
+              <p>{{ item.enm }}</p>
+              <p class="type">{{ item.cat }}</p>
+              <p>{{ item.frt }}</p>
+            </div>
+            <span class="score">{{ item.sc }}</span>
+          </li>
+        </ul>
+      </scroller>
     </div>
     <transition name="notFindTrans">
       <div v-if="findFlag" class="notFind">没有找到相关电影</div>
@@ -26,7 +28,7 @@
 </template>
 
 <script>
-import  BScroll from 'better-scroll'
+// import  BScroll from 'better-scroll'
 import { setTimeout, clearTimeout } from 'timers';
 import pinyin from '@/assets/pinyin/py'
 
@@ -45,12 +47,9 @@ export default {
     }
   },
   methods:{
-    _initScroll(){
-      this.scroll = new BScroll(this.$refs.wrapper)
-    },
     getData(val){
       val = pinyin.chineseToPinYin(val)
-      this.$axios.get('/api/searchList?cityId=10&kw=' + val).then((res) => {
+      this.$axios.get(`/api/searchList?cityId=${this.$store.state.city.id}&kw=${val}`).then((res) => {
         let msg = res.data.msg
         let movies = res.data.data.movies
         if(msg === 'ok' && movies){
@@ -62,18 +61,10 @@ export default {
         }
       })
     },
-    test(){
-    }
   },
   created(){
-    this.test()
   },
   mounted(){
-    setTimeout(()=>{
-      this.$nextTick(()=>{
-        this._initScroll()
-      })
-    },300)
   },
   watch:{
     message(val){

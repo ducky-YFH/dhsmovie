@@ -5,7 +5,7 @@
       <div class="hotCity">
         <h1>热门城市</h1>
         <ul>
-          <li v-for="item in hotCity" :key="item.id">
+          <li v-for="item in hotCity" :key="item.id" @tap="selectCity(item.nm, item.id)">
             <span>{{ item.nm }}</span>
           </li>
         </ul>
@@ -14,7 +14,7 @@
       <div class="citySelect" v-for="item in allCity" :key="item.index">
         <h1>{{ item.index }}</h1>
         <ul>
-          <li v-for="itemList in item.list" :key="itemList.id">
+          <li v-for="itemList in item.list" :key="itemList.id" @tap="selectCity(itemList.name, itemList.id)">
             {{ itemList.name }}
           </li>
         </ul>
@@ -49,18 +49,28 @@ export default {
     // better-scroll格式化
     _initScroll(){
       this.scroll = new BScroll(this.$refs.wrapper, {
-        click: true
+        click: true,
+        tap: true,
+        probeType: 1
       })
     },
     // 从服务器获取城市数据
     getCityData(){
-      this.$axios.get('/api/cityList')
-      .then((res)=>{
-        if (res.data.msg === 'ok'){
-          let cityList = res.data.data.cities
-          this.formatCityList(cityList)
-        }
-      })
+      // 获取本地存储
+      let hotCity = JSON.parse(window.localStorage.getItem('hotCity'))
+      let allCity = JSON.parse(window.localStorage.getItem('allCity'))
+      if(hotCity && allCity){
+        this.hotCity = hotCity
+        this.allCity = allCity
+      }else{
+        this.$axios.get('/api/cityList')
+        .then((res)=>{
+          if (res.data.msg === 'ok'){
+            let cityList = res.data.data.cities
+            this.formatCityList(cityList)
+          }
+        })
+      }
     },
     // 获取热门城市和城市按首位字母存放
     formatCityList(cityList){
@@ -103,6 +113,9 @@ export default {
       // eslint-disable-next-line no-console
       this.hotCity = hotCity
       this.allCity = allCity
+      // 本地存储
+      window.localStorage.setItem('hotCity',JSON.stringify(this.hotCity))
+      window.localStorage.setItem('allCity',JSON.stringify(this.allCity))
     },    
     _getHeight () {
       let cityItems = document.getElementsByClassName('citySelect')
@@ -124,7 +137,12 @@ export default {
         this.scroll.scrollToElement(el, 300)
       }
     },
-    
+    selectCity(name, id){
+      this.$store.commit('city/CITY_INFO',{name, id})
+      // 本地存储选择城市和id
+      localStorage.setItem('city', JSON.stringify({name: name, id: id}))
+      this.$router.push('/movie/nowPlaying')
+    }
   },
   created () {
   },

@@ -1,36 +1,40 @@
 <template>
   <div class="NowPlaying-container" ref="wrapper">
-    <ul>
-      <li class="movie-item" v-for="(item) in movieList" :key="item.id">
-        <div class="movie-detail">
-          <img
-            :src="item.img | imgFilter"
-            alt
-          />
-          <div class="introduce">
-            <h1>{{ item.nm }}</h1>
-            <p>
-              观众评
-              <span class="score">{{ item.sc }}</span>
-            </p>
-            <p>主演：{{ item.star }}</p>
-            <p>{{ item.showInfo }}</p>
+    <loading v-if="loadingFlag"></loading>
+    <scroller v-else :handleScroll="handleScroll" :handleTouchEnd="handleTouchEnd">
+      <ul>
+        <li v-if="message" class="refresh">{{ message }}</li>
+        <li @tap="handleTap" class="movie-item" v-for="(item) in movieList" :key="item.id">
+          <div class="movie-detail">
+            <img :src="item.img | imgFilter" alt />
+            <div class="introduce">
+              <h1>{{ item.nm }}</h1>
+              <p>
+                观众评
+                <span class="score">{{ item.sc }}</span>
+              </p>
+              <p>主演：{{ item.star }}</p>
+              <p>{{ item.showInfo }}</p>
+            </div>
           </div>
-        </div>
-        <button>购票</button>
-      </li>
-    </ul>
+          <button>购票</button>
+        </li>
+      </ul>
+    </scroller>
   </div>
 </template>
 
 <script>
-import BScroll from 'better-scroll'
-import { setTimeout } from 'timers';
+// import BScroll from 'better-scroll'
+// import { setTimeout } from 'timers';
 export default {
   name:'NowPlaying',
   data(){
     return {
-      movieList: []
+      movieList: [],
+      message: '',
+      loadingFlag: true,
+      cityId: -1,
     }
   },
   filters:{
@@ -39,30 +43,51 @@ export default {
     }
   },
   methods:{
-    _initScroll(){
-      this.scroll = new BScroll(this.$refs.wrapper, {
-        click: true
-      })
+    handleScroll(pos){
+      if(pos.y >= 30){
+        this.message = '更新数据中'
+      }
+    },
+    handleTouchEnd(pos){
+      if(pos.y >= 30){
+        this.$axios.get(`/api/movieOnInfoList?cityId=${this.$store.state.city.id}`).then((res) => {
+          if(res.data.msg === 'ok'){
+            this.movieList = res.data.data.movieList
+            this.message = '更新成功'
+            setTimeout(()=>{
+              this.message = ''
+            },1000)
+          }
+        })
+      }
     },
     // 获取服务器数据
     getData(){
-      this.$axios.get('/api/movieOnInfoList?cityId=10')
+      this.$axios.get(`/api/movieOnInfoList?cityId=${this.$store.state.city.id}`)
       .then((res) => {
         if(res.data.msg === 'ok'){
-            this.movieList = res.data.data.movieList
+          this.movieList = res.data.data.movieList
+          setTimeout(()=>{
+            this.loadingFlag = false
+            this.cityId = this.$store.state.city.id
+          },500)
         }
       })
+    },
+    handleTap(){
     }
   },
   created(){
-    this.getData()
+
   },
   mounted(){
-    setTimeout(() => {
-      this.$nextTick(() => {
-        this._initScroll()
-      })
-    },500)
+
+  },
+  activated(){
+    if(this.cityId !== this.$store.state.city.id){
+      this.loadingFlag = true
+      this.getData()
+    }
   }
 }
 </script>
@@ -73,6 +98,10 @@ export default {
   height: -moz-calc(100% - 100px);
   height: -webkit-calc(100% - 100px);
   overflow: hidden;
+  .refresh {
+    padding: 15px 0 0 15px;
+    color: #fe4365;
+  }
   .movie-item {
     padding: 15px;
     display: flex;
