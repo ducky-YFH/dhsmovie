@@ -1,9 +1,11 @@
 const state = {
-  nm : JSON.parse(window.localStorage.getItem('city')).name || '北京',
-  id : JSON.parse(window.localStorage.getItem('city')).id || 1
+  nm: JSON.parse(localStorage.getItem('cityName')) || '北京',
+  id: JSON.parse(localStorage.getItem('cityId')) || 1
+  // nm: '北京',
+  // id: 1  
 }
 const mutations = {
-  CITY_INFO(state, payload){
+  CITY_INFO(state, payload) {
     state.nm = payload.name;
     state.id = payload.id;
   }
@@ -12,7 +14,7 @@ const actions = {
 
 }
 export default {
-  namespaced : true,
+  namespaced: true,
   state,
   mutations,
   actions,

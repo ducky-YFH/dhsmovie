@@ -4,7 +4,7 @@
     <scroller v-else :handleScroll="handleScroll" :handleTouchEnd="handleTouchEnd">
       <ul>
         <li v-if="message" class="refresh">{{ message }}</li>
-        <li class="movie-item" v-for="item in movieList" :key="item.id">
+        <li @tap="handleTap(item.id)" class="movie-item" v-for="item in movieList" :key="item.id">
           <div class="movie-detail">
             <img :src="item.img | imgFilter" alt />
             <div class="introduce">
@@ -69,6 +69,9 @@ export default {
         })
       }
     },
+    handleTap(id){
+      this.$router.push(`/movie/detail/${id}`)
+    }
   },
   created(){
   },

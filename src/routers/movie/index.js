@@ -26,6 +26,15 @@ export default {
     {
       path: '/movie/',
       redirect: '/movie/nowPlaying'
+    },
+    {
+      path: '/movie/detail/:movieId',
+      components: {
+        detail: () => import('@/views/Movie/detail')
+      },
+      props: {
+        detail: true
+      }
     }
   ]
 }

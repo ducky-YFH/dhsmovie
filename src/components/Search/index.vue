@@ -8,7 +8,7 @@
     <div class="movieContent" ref="wrapper">
       <scroller>
         <ul>
-          <li v-for="item in movieList" :key="(item.id)">
+          <li @tap="handleTap(item.id)" v-for="item in movieList" :key="(item.id)">
             <img :src="item.img | imgFilter" alt />
             <div class="introduce">
               <h1>{{ item.nm }}</h1>
@@ -61,6 +61,9 @@ export default {
         }
       })
     },
+    handleTap(id){
+      this.$router.push(`/movie/detail/${id}`)
+    }
   },
   created(){
   },

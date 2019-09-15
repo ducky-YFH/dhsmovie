@@ -11,6 +11,7 @@
       <router-view></router-view>
     </keep-alive>
     <TabBar></TabBar>
+    <router-view name="detail"></router-view>
   </div>
 </template>
 
@@ -40,7 +41,8 @@ export default {
             cancel: '取消',
             ok: '切换定位',
             handleOk:()=>{
-              window.localStorage.setItem('city',JSON.stringify({name: name,id: id}))
+              window.localStorage.setItem('cityName',JSON.stringify(name))
+              window.localStorage.setItem('cityId',JSON.stringify(id))              
               window.location.reload()
             }
           })

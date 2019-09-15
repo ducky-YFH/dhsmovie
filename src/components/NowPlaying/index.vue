@@ -1,10 +1,10 @@
 <template>
-  <div class="NowPlaying-container" ref="wrapper">
+  <div class="NowPlaying-container">
     <loading v-if="loadingFlag"></loading>
     <scroller v-else :handleScroll="handleScroll" :handleTouchEnd="handleTouchEnd">
       <ul>
         <li v-if="message" class="refresh">{{ message }}</li>
-        <li @tap="handleTap" class="movie-item" v-for="(item) in movieList" :key="item.id">
+        <li @tap="handleTap(item.id)" class="movie-item" v-for="(item) in movieList" :key="item.id">
           <div class="movie-detail">
             <img :src="item.img | imgFilter" alt />
             <div class="introduce">
@@ -25,8 +25,7 @@
 </template>
 
 <script>
-// import BScroll from 'better-scroll'
-// import { setTimeout } from 'timers';
+
 export default {
   name:'NowPlaying',
   data(){
@@ -74,7 +73,8 @@ export default {
         }
       })
     },
-    handleTap(){
+    handleTap(id){
+      this.$router.push(`/movie/detail/${id}`)
     }
   },
   created(){
