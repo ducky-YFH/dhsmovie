@@ -1,14 +1,15 @@
 module.exports = {
-  publicPath: 'dhsmovie',
+  // publicPath: 'dhsmovie',
   devServer: {
-    open: true,                                 //配置自动启动浏览器
-    host: 'localhost',
-    port: 8080,                                 // 端口号
-    https: false,
-    hotOnly: false,
     proxy: {
+      '/api2': {
+        target: 'http://localhost:3000',
+        ws: true,
+        changeOrigin: true,
+      },
       '/api': {
         target: 'http://39.97.33.178',
+        ws: true,
         changeOrigin: true
       }
     }

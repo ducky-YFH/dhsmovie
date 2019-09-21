@@ -3,7 +3,7 @@
     <h2>{{ title }}</h2>
     <p>{{ content }}</p>
     <div class="btn">
-      <button @touchstart="handleCancel">{{ cancel }}</button>
+      <button v-if="cancel" @touchstart="handleCancel">{{ cancel }}</button>
       <button @touchstart="handleOk">{{ ok }}</button>
     </div>
   </div>
@@ -21,15 +21,15 @@ export default {
     width: 200px;
     height: 150px;
     left: 50%;
-    top:20%;
-    margin: 0 0 0 -100px;
+    top:50%;
+    margin: -75px 0 0 -100px;
     display: flex;
     flex-direction: column;
     text-align: center;
     background-color:#ffffff;
     box-shadow: 5px 5px 10px 1px #e6e6e6;
     border-radius: 5px;
-    z-index: 1111;
+    z-index: 9999;
     h2{
       line-height: 50px;
       font-size: 20px;
@@ -41,10 +41,11 @@ export default {
     }
     .btn{
       width: 100%;
+      display: flex;
       button{
         color: #fff;
         display: inline-block;
-        width: 50%;
+        flex: 1;
         height: 50px;
         border-radius: 2px;
       }
@@ -52,7 +53,7 @@ export default {
         background-color: rgba(236, 45, 77, 0.6);
       }
       button:last-child{
-        background-color: #3c9fe6;
+        background-color: #fe4365;
       }
     }
   }
