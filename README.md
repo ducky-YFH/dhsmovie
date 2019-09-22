@@ -15,7 +15,7 @@
 | 影院     | get      | cityId                   | http://39.97.33.178/api/cinemaList      |
 | 城市定位 | get      | 没有                     | http://39.97.33.178/api/getLocation     |
 
-### 安装依赖包
+### 安装模块
 ```
 npm install i
 ```
@@ -46,7 +46,7 @@ npm run build
 ```
 cd dhsmovieServer 
 ```
-### 安装依赖包
+### 安装模块
 ```
 npm i
 ```
