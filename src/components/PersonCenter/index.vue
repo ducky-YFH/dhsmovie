@@ -18,7 +18,7 @@
     <div class="cartBox" v-if="$store.state.user.isAdmin">
       <h1>
         管理员地址：
-        <a href="/admin" target="_blank" style="color: #fe4365;">进入管理后台</a>
+        <a href="/dhsmovie/admin" target="_blank" style="color: #fe4365;">进入管理后台</a>
       </h1>
     </div>
     <div class="cartBox">
