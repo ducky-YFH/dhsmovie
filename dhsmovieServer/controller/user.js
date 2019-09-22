@@ -113,7 +113,7 @@ var register = async (req, res) => {
 实现登录接口处理函数
 @route /api2/users/login
 @type POST
-@params email password
+@params email password captcha
 */
 var login = async (req, res) => {
   // eslint-disable-next-line no-console

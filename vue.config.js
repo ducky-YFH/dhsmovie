@@ -1,5 +1,5 @@
 module.exports = {
-  // publicPath: 'dhsmovie',
+  publicPath: 'dhsmovie',
   devServer: {
     proxy: {
       '/api2': {
