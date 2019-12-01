@@ -1,7 +1,7 @@
 
 # dhsmovie
 # 运行环境：node.js、mongodb
-# 项目预览地址：http://47.94.17.221/dhsmovie
+# 项目预览地址：http://47.94.17.221:82/dhsmovie
 ### (提示：本项目支持中文搜索电影)
 # 一. 电影部分
 
