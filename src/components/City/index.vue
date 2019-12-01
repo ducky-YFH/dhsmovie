@@ -160,13 +160,13 @@ export default {
 
 <style lang='scss' scoped>
 .City-container {
-  height: calc(100% - 100px);
   height: -moz-calc(100% - 100px);
   height: -webkit-calc(100% - 100px);
+  height: calc(100% - 100px);
   overflow: hidden;
-  width: calc(100% - 20px);
   width: -moz-calc(100% - 20px);
   width: -webkit-calc(100% - 20px);
+  width: calc(100% - 20px);
   .slide-container {
     background-color: #fff5f0;
     .hotCity {
