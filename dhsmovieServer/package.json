@@ -15,7 +15,7 @@
     "morgan": "~1.9.1"
   },
   "devDependencies": {
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "express-session": "^1.16.2",
     "mongoose": "^5.7.1",
